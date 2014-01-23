@@ -53,10 +53,10 @@ type Output struct {
 	Statistics   OutputStatistics   `json:"statistics"`
 }
 
-func (client *Client) buildRequest(jsCode string) *http.Request {
+func (client *Client) buildRequest(jsCode []byte) *http.Request {
 
 	values := url.Values{}
-	values.Set("js_code", jsCode)
+	values.Set("js_code", string(jsCode[:]))
 
         // TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
 	values.Set("compilation_level", "SIMPLE_OPTIMIZATIONS")
@@ -79,8 +79,7 @@ func (client *Client) buildRequest(jsCode string) *http.Request {
 	return req
 }
 
-func (client *Client) Compile(jsCode string) *Output {
-        // TODO make jsCode a io.Reader ?
+func (client *Client) Compile(jsCode []byte) *Output {
 
 	httpClient := http.Client{}
 

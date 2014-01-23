@@ -7,6 +7,6 @@ import (
 
 func main() {
         client := compilerapi.Client{}
-        output := client.Compile("var i = 0 // test")
+        output := client.Compile([]byte("var i = 0 // test"))
 	log.Printf("%+v", output)
 }
