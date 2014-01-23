@@ -27,7 +27,7 @@ type OutputError struct {
 }
 
 func (e *OutputError) AsLogline() string {
-	return fmt.Sprintf("[%d, %d] %s\n\t%s\n",
+	return fmt.Sprintf("\033[36;1m[%d, %d]\033[31m error: \033[0m%s\n\t%s\n",
 		e.Lineno,
 		e.Charno,
 		e.Error,
@@ -45,7 +45,7 @@ type OutputWarning struct {
 }
 
 func (w *OutputWarning) AsLogline() string {
-	return fmt.Sprintf("[%d, %d] %s\n\t%s\n",
+	return fmt.Sprintf("\033[36;1m[%d, %d]\033[33m warning: \033[0m%s\n\t%s\n",
 		w.Lineno,
 		w.Charno,
 		w.Warning,
