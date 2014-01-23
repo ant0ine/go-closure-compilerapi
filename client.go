@@ -2,6 +2,7 @@ package compilerapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -25,6 +26,15 @@ type OutputError struct {
 	Line   string `json:"line"`
 }
 
+func (e *OutputError) AsLogline() string {
+	return fmt.Sprintf("[%d, %d] %s\n\t%s\n",
+		e.Lineno,
+		e.Charno,
+		e.Error,
+		e.Line,
+	)
+}
+
 type OutputWarning struct {
 	Charno  int    `json:"charno"`
 	Warning string `json:"warning"`
@@ -32,6 +42,15 @@ type OutputWarning struct {
 	File    string `json:"file"`
 	Type    string `json:"type"`
 	Line    string `json:"line"`
+}
+
+func (w *OutputWarning) AsLogline() string {
+	return fmt.Sprintf("[%d, %d] %s\n\t%s\n",
+		w.Lineno,
+		w.Charno,
+		w.Warning,
+		w.Line,
+	)
 }
 
 type OutputServerError struct {
@@ -58,7 +77,7 @@ func (client *Client) buildRequest(jsCode []byte) *http.Request {
 	values := url.Values{}
 	values.Set("js_code", string(jsCode[:]))
 
-        // TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
+	// TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
 	values.Set("compilation_level", "SIMPLE_OPTIMIZATIONS")
 
 	values.Set("output_format", "json")
