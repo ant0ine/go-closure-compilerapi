@@ -14,7 +14,14 @@ const (
 	GoogleEndpointUrl = "http://closure-compiler.appspot.com/compile"
 )
 
+// See https://developers.google.com/closure/compiler/docs/api-ref for details about the options
 type Client struct {
+
+	// Possible values: ECMASCRIPT3, ECMASCRIPT5, ECMASCRIPT5_STRICT, default to ECMASCRIPT5_STRICT
+	Language string
+
+	// Possible values:  WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS, default to WHITESPACE_ONLY
+	CompilationLevel string
 }
 
 type OutputError struct {
@@ -82,11 +89,17 @@ func (client *Client) buildRequest(jsCode []byte) *http.Request {
 	values.Add("output_info", "warnings")
 	values.Add("output_info", "errors")
 
-	// TODO support ECMASCRIPT3, ECMASCRIPT5, ECMASCRIPT5_STRICT
-	values.Set("language", "ECMASCRIPT5_STRICT")
+	if client.Language != "" {
+		values.Set("language", client.Language)
+	} else {
+		values.Set("language", "ECMASCRIPT5_STRICT")
+	}
 
-	// TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
-	values.Set("compilation_level", "SIMPLE_OPTIMIZATIONS")
+	if client.CompilationLevel != "" {
+		values.Set("compilation_level", client.CompilationLevel)
+	} else {
+		values.Set("compilation_level", "WHITESPACE_ONLY")
+	}
 
 	req, err := http.NewRequest(
 		"POST",
