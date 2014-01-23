@@ -76,15 +76,17 @@ func (client *Client) buildRequest(jsCode []byte) *http.Request {
 
 	values := url.Values{}
 	values.Set("js_code", string(jsCode[:]))
-
-	// TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
-	values.Set("compilation_level", "SIMPLE_OPTIMIZATIONS")
-
 	values.Set("output_format", "json")
 	values.Add("output_info", "compiled_code")
 	values.Add("output_info", "statistics")
 	values.Add("output_info", "warnings")
 	values.Add("output_info", "errors")
+
+	// TODO support ECMASCRIPT3, ECMASCRIPT5, ECMASCRIPT5_STRICT
+	values.Set("language", "ECMASCRIPT5_STRICT")
+
+	// TODO support WHITESPACE_ONLY, SIMPLE_OPTIMIZATIONS, ADVANCED_OPTIMIZATIONS
+	values.Set("compilation_level", "SIMPLE_OPTIMIZATIONS")
 
 	req, err := http.NewRequest(
 		"POST",
